@@ -19,12 +19,6 @@ class QueryBuilder
         $this->select = implode(', ', $columns);
         return $this;
     }
-
-    public function where(string $column, string $operator, mixed $value): self
-    {
-        $this->wheres[] = "$column $operator " . $this->escapeValue($value);
-        return $this;
-    }
     
     private function escapeValue(mixed $value): string
     {
@@ -32,6 +26,33 @@ class QueryBuilder
             return "'$value'";
         }
         return (string)$value;
+    }
+
+    public function where(string $column, string $operator, mixed $value): self
+    {
+        $this->wheres[] = "$column $operator " . $this->escapeValue($value);
+        return $this;
+    }
+    
+    public function orWhere(string|callable $callback,
+                            string          $operator = null,
+                            mixed           $value = null): self
+    {
+        $wheresQuery='';
+        if (is_callable($callback)) {
+            $subQuery = new static();
+            $callback($subQuery);
+            $whereQuery='(' . implode(' AND ', $subQuery->wheres) . ')';
+        } else {
+            $whereQuery = "$callback $operator " . $this->escapeValue($value);
+        }
+        if (empty($this->wheres)) {
+            $this->wheres[] = $whereQuery;
+        } else {
+            $this->wheres[] = "OR {$whereQuery}";
+        }
+
+        return $this;
     }
 
     protected function buildBaseQuery(): string

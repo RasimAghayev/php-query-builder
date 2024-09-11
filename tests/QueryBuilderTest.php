@@ -47,4 +47,39 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+    public function testSelectColumnWhereOrWhereQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->where('status', '=', 1)
+            ->orWhere('quantity', '>', 0)
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product WHERE status = 1 OR quantity > 0;",
+            $sql
+        );
+    }
+    public function testSelectColumnWhereOrWhereAndQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->where('status', '=', 1)
+            ->orWhere(function ($query) {
+                $query->where('quantity', '>', 0)
+                    ->where('amount', '>', 0);
+            })
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product WHERE status = 1 OR (quantity > 0 AND amount > 0);",
+            $sql
+        );
+    }
 }
