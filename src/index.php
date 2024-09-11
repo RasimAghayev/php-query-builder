@@ -27,3 +27,11 @@ $sql = $queryBuilder
     ->toSql();
 
 echo $sql . '<br/>';
+
+$sql = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->toSql();
+
+echo $sql . '<br/>';
