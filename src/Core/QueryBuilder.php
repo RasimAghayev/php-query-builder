@@ -76,6 +76,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function whereLike(string $column, string $pattern): self
+    {
+        $this->wheres[] = $this->andOr("$column LIKE '$pattern'", 'AND');
+        return $this;
+    }
+
     // Base Query
 
     protected function buildBaseQuery(): string

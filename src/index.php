@@ -77,3 +77,18 @@ $selectColumnWhereNotINAndQuery = $queryBuilder
     ->whereNotIn('payer', [13, 135, 168])
     ->toSql();
 echo $selectColumnWhereNotINAndQuery . '<br/>';
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereLikeAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->toSql();
+echo $selectColumnWhereLikeAndQuery . '<br/>';
