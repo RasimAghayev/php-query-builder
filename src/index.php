@@ -52,7 +52,7 @@ $selectColumnWhereOrWhereAndQuery = $queryBuilder
 echo $selectColumnWhereOrWhereAndQuery . '<br/>';
 
 $queryBuilder = new QueryBuilder();
-$selectColumnWhereOrWhereAndQuery = $queryBuilder
+$selectColumnWhereINAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
@@ -60,5 +60,6 @@ $selectColumnWhereOrWhereAndQuery = $queryBuilder
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
+    ->whereIn('customer', [13, 135, 168])
     ->toSql();
-echo $selectColumnWhereOrWhereAndQuery . '<br/>';
+echo $selectColumnWhereINAndQuery . '<br/>';

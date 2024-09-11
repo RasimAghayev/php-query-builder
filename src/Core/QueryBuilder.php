@@ -8,6 +8,28 @@ class QueryBuilder
     private string $select = '*';
     private array $wheres = [];
 
+    // Private Methods
+
+    private function escapeValue(mixed $value): string
+    {
+        if (is_string($value)) {
+            return "'$value'";
+        }
+        return (string)$value;
+    }
+
+    private function andOr(string $whereQuery,string $operator='OR') : string 
+    {
+        return (empty($this->wheres))?"":"{$operator} ".$whereQuery;
+    }
+
+    private function arrayToSqlList(array $values): string
+    {
+        return implode(', ', array_map(fn($value) => $this->escapeValue($value), $values));
+    }
+    
+    // Public Methods
+
     public function table(string $table): self
     {
         $this->table = $table;
@@ -20,14 +42,6 @@ class QueryBuilder
         return $this;
     }
     
-    private function escapeValue(mixed $value): string
-    {
-        if (is_string($value)) {
-            return "'$value'";
-        }
-        return (string)$value;
-    }
-
     public function where(string $column, string $operator, mixed $value): self
     {
         $this->wheres[] = "$column $operator " . $this->escapeValue($value);
@@ -46,15 +60,18 @@ class QueryBuilder
         } else {
             $whereQuery = "$callback $operator " . $this->escapeValue($value);
         }
-        if (empty($this->wheres)) {
-            $this->wheres[] = $whereQuery;
-        } else {
-            $this->wheres[] = "OR {$whereQuery}";
-        }
-
+        $this->wheres[] =$this->andOr($whereQuery);
         return $this;
     }
 
+    public function whereIn(string $column, array $values): self
+    {
+        $this->wheres[] = $this->andOr("{$column} IN (" . $this->arrayToSqlList($values) . ")", 'AND');
+        return $this;
+    }
+
+    // Base Query
+    
     protected function buildBaseQuery(): string
     {
         $query = "SELECT {$this->select} FROM {$this->table}";
