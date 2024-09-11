@@ -1,0 +1,21 @@
+{
+    "name": "rasimaghayev/php-query-builder",
+    "description": "PHP class Query Builder",
+    "type": "phpunit",
+    "require": {
+        "phpunit/phpunit": "^11.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\Core\\": "src/core/",
+            "App\\Core\\Interface\\": "src/core/interface/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rasim Aghayev",
+            "email": "rasimaqayev@gmail.com"
+        }
+    ]
+}
