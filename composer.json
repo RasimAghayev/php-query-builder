@@ -4,8 +4,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "App\\Core\\": "src/core/",
-            "App\\Core\\Interface\\": "src/core/interface/"
+            "App\\Core\\": "src/Core/",
+            "App\\Core\\Interface\\": "src/Core/Interface/"
         }
     },
     "require-dev": {

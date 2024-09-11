@@ -1,4 +1,13 @@
 <?php
 require 'vendor/autoload.php';
 
-echo 'test';
+use App\Core\QueryBuilder;
+
+
+$queryBuilder = new QueryBuilder();
+
+$sql = $queryBuilder
+    ->table('product')
+    ->toSql();
+
+echo $sql . '<br/>';
