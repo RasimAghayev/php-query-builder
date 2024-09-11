@@ -7,9 +7,15 @@ class QueryBuilder
     private string $table = '';
     private string $select = '*';
 
-    public function table(string $table)
+    public function table(string $table): self
     {
         $this->table = $table;
+        return $this;
+    }
+
+    public function select(string ...$columns): self
+    {
+        $this->select = implode(', ', $columns);
         return $this;
     }
 

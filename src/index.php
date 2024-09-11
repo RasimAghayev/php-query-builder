@@ -11,3 +11,19 @@ $sql = $queryBuilder
     ->toSql();
 
 echo $sql . '<br/>';
+
+
+$sql = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->toSql();
+
+echo $sql . '<br/>';
+
+
+$sql = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->toSql();
+
+echo $sql . '<br/>';

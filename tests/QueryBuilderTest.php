@@ -18,4 +18,18 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+    public function testSelectColumnQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product;",
+            $sql
+        );
+    }
 }
