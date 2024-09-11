@@ -70,8 +70,14 @@ class QueryBuilder
         return $this;
     }
 
+    public function whereNotIn(string $column, array $values): self
+    {
+        $this->wheres[] = $this->andOr("{$column} NOT IN (" . $this->arrayToSqlList($values) . ")", 'AND');
+        return $this;
+    }
+
     // Base Query
-    
+
     protected function buildBaseQuery(): string
     {
         $query = "SELECT {$this->select} FROM {$this->table}";

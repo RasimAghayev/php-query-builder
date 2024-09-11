@@ -82,6 +82,7 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
     public function testSelectColumnWhereINAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -102,4 +103,27 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    public function testSelectColumnWhereNotINAndQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->where('status', '=', 1)
+            ->orWhere(function ($query) {
+                $query->where('quantity', '>', 0)
+                    ->where('amount', '>', 0);
+            })
+            ->whereIn('customer', [13, 135, 168])
+            ->whereNotIn('payer', [13, 135, 168])
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product WHERE status = 1 OR (quantity > 0 AND amount > 0) AND customer IN (13, 135, 168) AND payer NOT IN (13, 135, 168);",
+            $sql
+        );
+    }
+
 }
