@@ -6,6 +6,7 @@ class QueryBuilder
 {
     private string $table = '';
     private string $select = '*';
+    private array $wheres = [];
 
     public function table(string $table): self
     {
@@ -40,7 +41,7 @@ class QueryBuilder
         if (!empty($this->wheres)) {
             $query .= ' WHERE ' . implode(' ', $this->wheres);
         }
-        
+
         return "{$query};";
     }
     
