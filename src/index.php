@@ -63,6 +63,7 @@ $selectColumnWhereINAndQuery = $queryBuilder
     ->whereIn('customer', [13, 135, 168])
     ->toSql();
 echo $selectColumnWhereINAndQuery . '<br/>';
+$queryBuilder=null;
 
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereNotINAndQuery = $queryBuilder
@@ -77,6 +78,7 @@ $selectColumnWhereNotINAndQuery = $queryBuilder
     ->whereNotIn('payer', [13, 135, 168])
     ->toSql();
 echo $selectColumnWhereNotINAndQuery . '<br/>';
+$queryBuilder=null;
 
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereLikeAndQuery = $queryBuilder
@@ -92,3 +94,4 @@ $selectColumnWhereLikeAndQuery = $queryBuilder
     ->whereLike('name', '%Ras%')
     ->toSql();
 echo $selectColumnWhereLikeAndQuery . '<br/>';
+$queryBuilder=null;
