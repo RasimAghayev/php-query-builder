@@ -95,3 +95,91 @@ $selectColumnWhereLikeAndQuery = $queryBuilder
     ->toSql();
 echo $selectColumnWhereLikeAndQuery . '<br/>';
 $queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereNotLikeAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->toSql();
+echo $selectColumnWhereNotLikeAndQuery . '<br/>';
+$queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereBetweenAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->whereBetween('date', '2023-01-01', '2023-12-31')
+    ->toSql();
+echo $selectColumnWhereBetweenAndQuery . '<br/>';
+$queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereNotBetweenAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->whereBetween('date', '2023-01-01', '2023-12-31')
+    ->whereNotBetween('created_at', '2023-01-01', '2023-12-31')
+    ->toSql();
+echo $selectColumnWhereNotBetweenAndQuery . '<br/>';
+$queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnOtherQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->whereBetween('date', '2023-01-01', '2023-12-31')
+    ->whereNotBetween('created_at', '2023-01-01', '2023-12-31')
+    ->groupBy('category, status')
+    ->having('amount', '>', 100)
+    ->orderBy('amount', 'DESC')
+    ->limit(10)
+    ->offset(5)
+    ->toSql();
+echo $selectColumnOtherQuery . '<br/>';
+$queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnAggregationQuery = $queryBuilder
+    ->table('product')
+    ->sum('quantity * amount', 'total_quantity')
+    ->avg('amount', 'avg_amount')
+    ->count('id', 'total_products')
+    ->toSql();
+echo $selectColumnAggregationQuery . '<br/>';
+$queryBuilder=null;

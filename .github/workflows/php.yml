@@ -1,0 +1,44 @@
+name: PHP CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - '**/*.php'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v3
+        with:
+          php-version: '8.3'
+          extensions: mbstring, mysqli, xml
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "Deploying to server..."
