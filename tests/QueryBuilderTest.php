@@ -5,6 +5,9 @@ use App\Core\QueryBuilder;
 
 class QueryBuilderTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testSelectQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -18,6 +21,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -32,6 +39,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -47,6 +58,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereOrWhereQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -63,6 +78,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereOrWhereAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -83,6 +102,9 @@ class QueryBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereINAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -104,6 +126,9 @@ class QueryBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereNotINAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -126,6 +151,9 @@ class QueryBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereLikeAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -148,6 +176,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereNotLikeAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -171,6 +203,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereBetweenAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -196,6 +232,9 @@ class QueryBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testSelectColumnWhereNotBetweenAndQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -222,6 +261,9 @@ class QueryBuilderTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testSelectColumnOtherQuery(): void
     {
         $queryBuilder = new QueryBuilder();
@@ -252,7 +294,10 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
-    
+
+    /**
+     * @return void
+     */
     public function testSelectColumnAggregationQuery(): void
     {
         $queryBuilder = new QueryBuilder();

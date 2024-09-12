@@ -1,7 +1,5 @@
 parameters:
-    level: max
-    paths:
-        - src
-        - tests
-    autoload_files:
-        - %rootDir%/../../../vendor/autoload.php
+	level: 6
+	paths:
+		- src
+		- tests
