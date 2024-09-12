@@ -173,3 +173,13 @@ $selectColumnOtherQuery = $queryBuilder
     ->toSql();
 echo $selectColumnOtherQuery . '<br/>';
 $queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnAggregationQuery = $queryBuilder
+    ->table('product')
+    ->sum('quantity * amount', 'total_quantity')
+    ->avg('amount', 'avg_amount')
+    ->count('id', 'total_products')
+    ->toSql();
+echo $selectColumnAggregationQuery . '<br/>';
+$queryBuilder=null;

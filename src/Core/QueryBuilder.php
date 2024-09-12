@@ -3,12 +3,14 @@
 namespace App\Core;
 
 use App\Core\Interface\{QueryStaticBuilderInterface,
-                        QuerySelectBuilderInterface,
-                        QueryWhereBuilderInterface};
+                        QueryWhereBuilderInterface,
+                        QueryOtherBuilderInterface,
+                        AggregationInterface};
 
 class QueryBuilder implements   QueryStaticBuilderInterface,
-                                QuerySelectBuilderInterface,
-                                QueryWhereBuilderInterface
+                                QueryWhereBuilderInterface,
+                                QueryOtherBuilderInterface,
+                                AggregationInterface
 {
     private string $table = '';
     private string $select = '*';
@@ -32,7 +34,7 @@ class QueryBuilder implements   QueryStaticBuilderInterface,
     private function andOr(string $whereQuery,
                            string $operator='OR') : string 
     {
-        return (empty($this->wheres))?"":"{$operator} ".$whereQuery;
+        return (empty($this->wheres)) ? "" : "{$operator} ".$whereQuery;
     }
 
     private function arrayToSqlList(array $values): string
@@ -53,7 +55,7 @@ class QueryBuilder implements   QueryStaticBuilderInterface,
         $this->select = implode(', ', $columns);
         return $this;
     }
-    
+
     public function where(string $column, string $operator, mixed $value): QueryWhereBuilderInterface
     {
         $this->wheres[] = "$column $operator " . $this->escapeValue($value);
@@ -72,7 +74,7 @@ class QueryBuilder implements   QueryStaticBuilderInterface,
         } else {
             $whereQuery = "$callback $operator " . $this->escapeValue($value);
         }
-        $this->wheres[] =$this->andOr($whereQuery);
+        $this->wheres[] = $this->andOr($whereQuery);
         return $this;
     }
 
@@ -112,7 +114,46 @@ class QueryBuilder implements   QueryStaticBuilderInterface,
         return $this;
     }
 
-    // Other query
+    // Aggregation Methods with Alias
+
+    public function sum(string $expression, string $alias = 'result'): AggregationInterface
+    {
+        $this->select .= ", SUM($expression)" . ($alias ? " AS $alias" : "");
+        return $this;
+    }
+
+    public function avg(string $expression, string $alias = 'result'): AggregationInterface
+    {
+        $this->select .= ", AVG($expression)" . ($alias ? " AS $alias" : "");
+        return $this;
+    }
+
+    public function count(string $expression, string $alias = 'result'): AggregationInterface
+    {
+        $this->select .= ", COUNT($expression)" . ($alias ? " AS $alias" : "");
+        return $this;
+    }
+
+    protected function aggregate(string $function, string $expression, string $alias): string
+    {
+        $query = "SELECT $function($expression) AS $alias FROM {$this->table}";
+
+        if (!empty($this->wheres)) {
+            $query .= ' WHERE ' . implode(' AND ', $this->wheres);
+        }
+
+        if (!empty($this->groupBy)) {
+            $query .= " {$this->groupBy}";
+        }
+
+        if (!empty($this->having)) {
+            $query .= " {$this->having}";
+        }
+
+        return $query . ";";
+    }
+
+    // Other query methods
 
     public function orderBy(string $column, string $direction = 'ASC'): QueryOtherBuilderInterface
     {

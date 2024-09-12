@@ -252,5 +252,22 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+    
+    public function testSelectColumnAggregationQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->sum('quantity * amount', 'total_quantity')
+            ->avg('amount', 'avg_amount')
+            ->count('id', 'total_products')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT *, SUM(quantity * amount) AS total_quantity, AVG(amount) AS avg_amount, COUNT(id) AS total_products FROM product;",
+            $sql
+        );
+    }
 
 }
