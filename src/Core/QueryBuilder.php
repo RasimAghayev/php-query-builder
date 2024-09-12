@@ -88,6 +88,18 @@ class QueryBuilder
         return $this;
     }
 
+    public function whereBetween(string $column, mixed $start, mixed $end): self
+    {
+        $this->wheres[] = $this->andOr("$column BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
+        return $this;
+    }
+    public function whereNotBetween(string $column, mixed $start, mixed $end): self
+    {
+        $this->wheres[] = $this->andOr("$column NOT BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
+        return $this;
+    }
+
+
     // Base Query
 
     protected function buildBaseQuery(): string

@@ -112,3 +112,40 @@ $selectColumnWhereNotLikeAndQuery = $queryBuilder
     ->toSql();
 echo $selectColumnWhereNotLikeAndQuery . '<br/>';
 $queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereBetweenAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->whereBetween('date', '2023-01-01', '2023-12-31')
+    ->toSql();
+echo $selectColumnWhereBetweenAndQuery . '<br/>';
+$queryBuilder=null;
+
+$queryBuilder = new QueryBuilder();
+$selectColumnWhereNotBetweenAndQuery = $queryBuilder
+    ->table('product')
+    ->select('id', 'name', 'price')
+    ->where('status', '=', 1)
+    ->orWhere(function ($query) {
+        $query->where('quantity', '>', 0)
+            ->where('amount', '>', 0);
+    })
+    ->whereIn('customer', [13, 135, 168])
+    ->whereNotIn('payer', [13, 135, 168])
+    ->whereLike('name', '%Ras%')
+    ->whereNotLike('name', '%es%')
+    ->whereBetween('date', '2023-01-01', '2023-12-31')
+    ->whereNotBetween('created_at', '2023-01-01', '2023-12-31')
+    ->toSql();
+echo $selectColumnWhereNotBetweenAndQuery . '<br/>';
+$queryBuilder=null;

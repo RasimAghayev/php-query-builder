@@ -171,5 +171,55 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
+    public function testSelectColumnWhereBetweenAndQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->where('status', '=', 1)
+            ->orWhere(function ($query) {
+                $query->where('quantity', '>', 0)
+                    ->where('amount', '>', 0);
+            })
+            ->whereIn('customer', [13, 135, 168])
+            ->whereNotIn('payer', [13, 135, 168])
+            ->whereLike('name', '%Ras%')
+            ->whereNotLike('name', '%es%')
+            ->whereBetween('date', '2023-01-01', '2023-12-31')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product WHERE status = 1 OR (quantity > 0 AND amount > 0) AND customer IN (13, 135, 168) AND payer NOT IN (13, 135, 168) AND name LIKE '%Ras%' AND name NOT LIKE '%es%' AND date BETWEEN '2023-01-01' AND '2023-12-31';",
+            $sql
+        );
+    }
+
+    public function testSelectColumnWhereNotBetweenAndQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->select('id', 'name', 'price')
+            ->where('status', '=', 1)
+            ->orWhere(function ($query) {
+                $query->where('quantity', '>', 0)
+                    ->where('amount', '>', 0);
+            })
+            ->whereIn('customer', [13, 135, 168])
+            ->whereNotIn('payer', [13, 135, 168])
+            ->whereLike('name', '%Ras%')
+            ->whereNotLike('name', '%es%')
+            ->whereBetween('date', '2023-01-01', '2023-12-31')
+            ->whereNotBetween('created_at', '2023-01-01', '2023-12-31')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT id, name, price FROM product WHERE status = 1 OR (quantity > 0 AND amount > 0) AND customer IN (13, 135, 168) AND payer NOT IN (13, 135, 168) AND name LIKE '%Ras%' AND name NOT LIKE '%es%' AND date BETWEEN '2023-01-01' AND '2023-12-31' AND created_at NOT BETWEEN '2023-01-01' AND '2023-12-31';",
+            $sql
+        );
+    }
 
 }
