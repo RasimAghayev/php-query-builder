@@ -1,0 +1,25 @@
+stages:
+  - test
+  - deploy
+
+variables:
+  PHP_VERSION: "8.3"
+
+before_script:
+  - apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev
+  - docker-php-ext-configure gd --with-freetype --with-jpeg
+  - docker-php-ext-install gd
+  - composer install --no-progress --no-suggest --prefer-dist
+
+test:
+  stage: test
+  image: php:${PHP_VERSION}-cli
+  script:
+    - vendor/bin/phpunit
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to server..."
+  only:
+    - master
