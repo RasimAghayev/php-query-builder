@@ -82,6 +82,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function whereNotLike(string $column, string $pattern): self
+    {
+        $this->wheres[] = $this->andOr("$column NOT LIKE '$pattern'", 'AND');
+        return $this;
+    }
+
     // Base Query
 
     protected function buildBaseQuery(): string
