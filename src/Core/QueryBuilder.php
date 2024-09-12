@@ -2,7 +2,13 @@
 
 namespace App\Core;
 
-class QueryBuilder
+use App\Core\Interface\{QueryStaticBuilderInterface,
+                        QuerySelectBuilderInterface,
+                        QueryWhereBuilderInterface};
+
+class QueryBuilder implements   QueryStaticBuilderInterface,
+                                QuerySelectBuilderInterface,
+                                QueryWhereBuilderInterface
 {
     private string $table = '';
     private string $select = '*';
@@ -23,7 +29,8 @@ class QueryBuilder
         return (string)$value;
     }
 
-    private function andOr(string $whereQuery,string $operator='OR') : string 
+    private function andOr(string $whereQuery,
+                           string $operator='OR') : string 
     {
         return (empty($this->wheres))?"":"{$operator} ".$whereQuery;
     }
@@ -35,19 +42,19 @@ class QueryBuilder
     
     // Public Methods
 
-    public function table(string $table): self
+    public function table(string $table): QueryStaticBuilderInterface
     {
         $this->table = $table;
         return $this;
     }
 
-    public function select(string ...$columns): self
+    public function select(string ...$columns): QueryStaticBuilderInterface
     {
         $this->select = implode(', ', $columns);
         return $this;
     }
     
-    public function where(string $column, string $operator, mixed $value): self
+    public function where(string $column, string $operator, mixed $value): QueryWhereBuilderInterface
     {
         $this->wheres[] = "$column $operator " . $this->escapeValue($value);
         return $this;
@@ -55,7 +62,7 @@ class QueryBuilder
     
     public function orWhere(string|callable $callback,
                             string          $operator = null,
-                            mixed           $value = null): self
+                            mixed           $value = null): QueryWhereBuilderInterface
     {
         $wheresQuery='';
         if (is_callable($callback)) {
@@ -69,37 +76,37 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereIn(string $column, array $values): self
+    public function whereIn(string $column, array $values): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("{$column} IN (" . $this->arrayToSqlList($values) . ")", 'AND');
         return $this;
     }
 
-    public function whereNotIn(string $column, array $values): self
+    public function whereNotIn(string $column, array $values): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("{$column} NOT IN (" . $this->arrayToSqlList($values) . ")", 'AND');
         return $this;
     }
 
-    public function whereLike(string $column, string $pattern): self
+    public function whereLike(string $column, string $pattern): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("$column LIKE '$pattern'", 'AND');
         return $this;
     }
 
-    public function whereNotLike(string $column, string $pattern): self
+    public function whereNotLike(string $column, string $pattern): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("$column NOT LIKE '$pattern'", 'AND');
         return $this;
     }
 
-    public function whereBetween(string $column, mixed $start, mixed $end): self
+    public function whereBetween(string $column, mixed $start, mixed $end): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("$column BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
     }
 
-    public function whereNotBetween(string $column, mixed $start, mixed $end): self
+    public function whereNotBetween(string $column, mixed $start, mixed $end): QueryWhereBuilderInterface
     {
         $this->wheres[] = $this->andOr("$column NOT BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
@@ -107,31 +114,31 @@ class QueryBuilder
 
     // Other query
 
-    public function orderBy(string $column, string $direction = 'ASC'): self
+    public function orderBy(string $column, string $direction = 'ASC'): QueryOtherBuilderInterface
     {
         $this->orderBy = "ORDER BY $column $direction";
         return $this;
     }
     
-    public function groupBy(string ...$columns): self
+    public function groupBy(string ...$columns): QueryOtherBuilderInterface
     {
         $this->groupBy = 'GROUP BY ' . implode(', ', $columns);
         return $this;
     }
 
-    public function having(string $column, string $operator, mixed $value): self
+    public function having(string $column, string $operator, mixed $value): QueryOtherBuilderInterface
     {
         $this->having = "HAVING $column $operator " . $this->escapeValue($value);
         return $this;
     }
 
-    public function limit(int $limit): self
+    public function limit(int $limit): QueryOtherBuilderInterface
     {
         $this->limit = "LIMIT $limit";
         return $this;
     }
 
-    public function offset(int $offset): self
+    public function offset(int $offset): QueryOtherBuilderInterface
     {
         $this->offset = "OFFSET $offset";
         return $this;
