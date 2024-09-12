@@ -6,7 +6,14 @@
         "psr-4": {
             "App\\Core\\": "src/Core/",
             "App\\Core\\Interface\\": "src/Core/Interface/"
-        }
+        },
+        "files": [
+            "src/Core/Interface/QueryStaticBuilderInterface.inc",
+            "src/Core/Interface/AggregationInterface.inc",
+            "src/Core/Interface/QueryOtherBuilderInterface.inc",
+            "src/Core/Interface/QueryWhereBuilderInterface.inc",
+            "src/Core/QueryBuilder.inc"
+        ]
     },
     "scripts": {
         "lint": "phpcs src/ tests/",
