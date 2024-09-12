@@ -7,6 +7,11 @@ class QueryBuilder
     private string $table = '';
     private string $select = '*';
     private array $wheres = [];
+    private string $orderBy = '';
+    private string $groupBy = '';
+    private string $having = '';
+    private string $limit = '';
+    private string $offset = '';
 
     // Private Methods
 
@@ -93,12 +98,44 @@ class QueryBuilder
         $this->wheres[] = $this->andOr("$column BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
     }
+
     public function whereNotBetween(string $column, mixed $start, mixed $end): self
     {
         $this->wheres[] = $this->andOr("$column NOT BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
     }
 
+    // Other query
+
+    public function orderBy(string $column, string $direction = 'ASC'): self
+    {
+        $this->orderBy = "ORDER BY $column $direction";
+        return $this;
+    }
+    
+    public function groupBy(string ...$columns): self
+    {
+        $this->groupBy = 'GROUP BY ' . implode(', ', $columns);
+        return $this;
+    }
+
+    public function having(string $column, string $operator, mixed $value): self
+    {
+        $this->having = "HAVING $column $operator " . $this->escapeValue($value);
+        return $this;
+    }
+
+    public function limit(int $limit): self
+    {
+        $this->limit = "LIMIT $limit";
+        return $this;
+    }
+
+    public function offset(int $offset): self
+    {
+        $this->offset = "OFFSET $offset";
+        return $this;
+    }
 
     // Base Query
 
@@ -109,7 +146,25 @@ class QueryBuilder
         if (!empty($this->wheres)) {
             $query .= ' WHERE ' . implode(' ', $this->wheres);
         }
+        if (!empty($this->groupBy)) {
+            $query .= " {$this->groupBy}";
+        }
 
+        if (!empty($this->having)) {
+            $query .= " {$this->having}";
+        }
+
+        if (!empty($this->orderBy)) {
+            $query .= " {$this->orderBy}";
+        }
+
+        if (!empty($this->limit)) {
+            $query .= " {$this->limit}";
+        }
+
+        if (!empty($this->offset)) {
+            $query .= " {$this->offset}";
+        }
         return "{$query};";
     }
     
