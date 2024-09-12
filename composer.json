@@ -9,7 +9,7 @@
         }
     },
     "scripts": {
-        "lint": "phpcs",
+        "lint": "phpcs src/ tests/",
         "analyse": "phpstan analyse",
         "test": "phpunit"
     },
