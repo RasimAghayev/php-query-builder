@@ -153,7 +153,7 @@ class QueryBuilder implements
      * @param mixed|null $value
      * @return self
      */
-    public function orWhere(string|callable $callback, string $operator = null, mixed $value = null): self
+    public function orWhere(string|callable $callback, ?string $operator = null, mixed $value = null): self
     {
         $wheresQuery = '';
         if (is_callable($callback)) {
