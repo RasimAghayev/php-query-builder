@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
 use App\Core\QueryBuilder;
 
@@ -314,5 +316,4 @@ class QueryBuilderTest extends TestCase
             $sql
         );
     }
-
 }

@@ -1,25 +1,21 @@
 <?php
+
 require 'vendor/autoload.php';
-
 use App\Core\QueryBuilder;
-
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectQuery = $queryBuilder
     ->table('product')
     ->toSql();
 echo $selectQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->toSql();
 echo $selectColumnQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereQuery = $queryBuilder
     ->table('product')
@@ -27,8 +23,7 @@ $selectColumnWhereQuery = $queryBuilder
     ->where('status', '=', 1)
     ->toSql();
 echo $selectColumnWhereQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereOrWhereQuery = $queryBuilder
     ->table('product')
@@ -37,40 +32,40 @@ $selectColumnWhereOrWhereQuery = $queryBuilder
     ->orWhere('quantity', '>', 0)
     ->toSql();
 echo $selectColumnWhereOrWhereQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereOrWhereAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
     ->toSql();
 echo $selectColumnWhereOrWhereAndQuery . '<br/>';
-
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereINAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
     ->whereIn('customer', [13, 135, 168])
     ->toSql();
 echo $selectColumnWhereINAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereNotINAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -78,14 +73,14 @@ $selectColumnWhereNotINAndQuery = $queryBuilder
     ->whereNotIn('payer', [13, 135, 168])
     ->toSql();
 echo $selectColumnWhereNotINAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereLikeAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -94,14 +89,14 @@ $selectColumnWhereLikeAndQuery = $queryBuilder
     ->whereLike('name', '%Ras%')
     ->toSql();
 echo $selectColumnWhereLikeAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereNotLikeAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -111,14 +106,14 @@ $selectColumnWhereNotLikeAndQuery = $queryBuilder
     ->whereNotLike('name', '%es%')
     ->toSql();
 echo $selectColumnWhereNotLikeAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereBetweenAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -129,14 +124,14 @@ $selectColumnWhereBetweenAndQuery = $queryBuilder
     ->whereBetween('date', '2023-01-01', '2023-12-31')
     ->toSql();
 echo $selectColumnWhereBetweenAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnWhereNotBetweenAndQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -148,14 +143,14 @@ $selectColumnWhereNotBetweenAndQuery = $queryBuilder
     ->whereNotBetween('created_at', '2023-01-01', '2023-12-31')
     ->toSql();
 echo $selectColumnWhereNotBetweenAndQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnOtherQuery = $queryBuilder
     ->table('product')
     ->select('id', 'name', 'price')
     ->where('status', '=', 1)
     ->orWhere(function ($query) {
+
         $query->where('quantity', '>', 0)
             ->where('amount', '>', 0);
     })
@@ -172,8 +167,7 @@ $selectColumnOtherQuery = $queryBuilder
     ->offset(5)
     ->toSql();
 echo $selectColumnOtherQuery . '<br/>';
-unset($queryBuilder); 
-
+unset($queryBuilder);
 $queryBuilder = new QueryBuilder();
 $selectColumnAggregationQuery = $queryBuilder
     ->table('product')
@@ -182,4 +176,4 @@ $selectColumnAggregationQuery = $queryBuilder
     ->count('id', 'total_products')
     ->toSql();
 echo $selectColumnAggregationQuery . '<br/>';
-unset($queryBuilder); 
+unset($queryBuilder);
