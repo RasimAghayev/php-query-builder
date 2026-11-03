@@ -70,7 +70,7 @@ class QueryBuilder implements
 
     /**
      * Escapes a value for SQL query.
-     * 
+     *
      * @param mixed $value
      * @return string
      */
@@ -84,7 +84,7 @@ class QueryBuilder implements
 
     /**
      * Constructs the WHERE clause with an optional logical operator.
-     * 
+     *
      * @param string $whereQuery
      * @param string $operator
      * @return string
@@ -96,7 +96,7 @@ class QueryBuilder implements
 
     /**
      * Converts an array of values to a SQL list format.
-     * 
+     *
      * @param mixed[] $values
      * @return string
      */
@@ -109,11 +109,11 @@ class QueryBuilder implements
 
     /**
      * Sets the table for the query.
-     * 
+     *
      * @param string $table
-     * @return QueryStaticBuilderInterface
+     * @return self
      */
-    public function table(string $table): QueryStaticBuilderInterface
+    public function table(string $table): self
     {
         $this->table = $table;
         return $this;
@@ -121,11 +121,11 @@ class QueryBuilder implements
 
     /**
      * Specifies the columns to select.
-     * 
+     *
      * @param string ...$columns
-     * @return QueryStaticBuilderInterface
+     * @return self
      */
-    public function select(string ...$columns): QueryStaticBuilderInterface
+    public function select(string ...$columns): self
     {
         $this->select = implode(', ', $columns);
         return $this;
@@ -133,13 +133,13 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE clause to the query.
-     * 
+     *
      * @param string $column
      * @param string $operator
      * @param mixed $value
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function where(string $column, string $operator, mixed $value): QueryWhereBuilderInterface
+    public function where(string $column, string $operator, mixed $value): self
     {
         $this->wheres[] = "$column $operator " . $this->escapeValue($value);
         return $this;
@@ -147,17 +147,17 @@ class QueryBuilder implements
 
     /**
      * Adds an OR WHERE clause to the query.
-     * 
+     *
      * @param string|callable $callback
      * @param string|null $operator
      * @param mixed|null $value
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function orWhere(string|callable $callback, string $operator = null, mixed $value = null): QueryWhereBuilderInterface
+    public function orWhere(string|callable $callback, string $operator = null, mixed $value = null): self
     {
         $wheresQuery = '';
         if (is_callable($callback)) {
-            $subQuery = new self(); 
+            $subQuery = new self();
             $callback($subQuery);
             $filteredWheres = array_filter($subQuery->wheres, 'is_string');
             $whereQuery = '(' . implode(' AND ', $filteredWheres) . ')';
@@ -170,12 +170,12 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE IN clause to the query.
-     * 
+     *
      * @param string $column
      * @param mixed[] $values
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereIn(string $column, array $values): QueryWhereBuilderInterface
+    public function whereIn(string $column, array $values): self
     {
         $this->wheres[] = $this->andOr("$column IN (" . $this->arrayToSqlList($values) . ")", 'AND');
         return $this;
@@ -183,12 +183,12 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE NOT IN clause to the query.
-     * 
+     *
      * @param string $column
      * @param mixed[] $values
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereNotIn(string $column, array $values): QueryWhereBuilderInterface
+    public function whereNotIn(string $column, array $values): self
     {
         $this->wheres[] = $this->andOr("$column NOT IN (" . $this->arrayToSqlList($values) . ")", 'AND');
         return $this;
@@ -196,12 +196,12 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE LIKE clause to the query.
-     * 
+     *
      * @param string $column
      * @param string $pattern
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereLike(string $column, string $pattern): QueryWhereBuilderInterface
+    public function whereLike(string $column, string $pattern): self
     {
         $this->wheres[] = $this->andOr("$column LIKE '$pattern'", 'AND');
         return $this;
@@ -209,12 +209,12 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE NOT LIKE clause to the query.
-     * 
+     *
      * @param string $column
      * @param string $pattern
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereNotLike(string $column, string $pattern): QueryWhereBuilderInterface
+    public function whereNotLike(string $column, string $pattern): self
     {
         $this->wheres[] = $this->andOr("$column NOT LIKE '$pattern'", 'AND');
         return $this;
@@ -222,13 +222,13 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE BETWEEN clause to the query.
-     * 
+     *
      * @param string $column
      * @param mixed $start
      * @param mixed $end
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereBetween(string $column, mixed $start, mixed $end): QueryWhereBuilderInterface
+    public function whereBetween(string $column, mixed $start, mixed $end): self
     {
         $this->wheres[] = $this->andOr("$column BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
@@ -236,13 +236,13 @@ class QueryBuilder implements
 
     /**
      * Adds a WHERE NOT BETWEEN clause to the query.
-     * 
+     *
      * @param string $column
      * @param mixed $start
      * @param mixed $end
-     * @return QueryWhereBuilderInterface
+     * @return self
      */
-    public function whereNotBetween(string $column, mixed $start, mixed $end): QueryWhereBuilderInterface
+    public function whereNotBetween(string $column, mixed $start, mixed $end): self
     {
         $this->wheres[] = $this->andOr("$column NOT BETWEEN " . $this->escapeValue($start) . " AND " . $this->escapeValue($end), 'AND');
         return $this;
@@ -252,12 +252,12 @@ class QueryBuilder implements
 
     /**
      * Adds a SUM aggregation to the SELECT clause.
-     * 
+     *
      * @param string $expression
      * @param string $alias
-     * @return AggregationInterface
+     * @return self
      */
-    public function sum(string $expression, string $alias = 'result'): AggregationInterface
+    public function sum(string $expression, string $alias = 'result'): self
     {
         $this->select .= ", SUM($expression)" . ($alias ? " AS $alias" : "");
         return $this;
@@ -265,12 +265,12 @@ class QueryBuilder implements
 
     /**
      * Adds an AVG aggregation to the SELECT clause.
-     * 
+     *
      * @param string $expression
      * @param string $alias
-     * @return AggregationInterface
+     * @return self
      */
-    public function avg(string $expression, string $alias = 'result'): AggregationInterface
+    public function avg(string $expression, string $alias = 'result'): self
     {
         $this->select .= ", AVG($expression)" . ($alias ? " AS $alias" : "");
         return $this;
@@ -278,12 +278,12 @@ class QueryBuilder implements
 
     /**
      * Adds a COUNT aggregation to the SELECT clause.
-     * 
+     *
      * @param string $expression
      * @param string $alias
-     * @return AggregationInterface
+     * @return self
      */
-    public function count(string $expression, string $alias = 'result'): AggregationInterface
+    public function count(string $expression, string $alias = 'result'): self
     {
         $this->select .= ", COUNT($expression)" . ($alias ? " AS $alias" : "");
         return $this;
@@ -291,7 +291,7 @@ class QueryBuilder implements
 
     /**
      * Constructs an aggregation query.
-     * 
+     *
      * @param string $function
      * @param string $expression
      * @param string $alias
@@ -302,10 +302,7 @@ class QueryBuilder implements
         $query = "SELECT $function($expression) AS $alias FROM {$this->table}";
 
         if (!empty($this->wheres)) {
-            $whereClauses = array_map(function ($where) {
-                return $where['column'] . ' ' . $where['operator'] . ' ' . (is_string($where['value']) ? "'" . $where['value'] . "'" : $where['value']);
-            }, $this->wheres);
-            $query .= ' WHERE ' . implode(' AND ', $whereClauses);
+            $query .= ' WHERE ' . implode(' ', $this->wheres);
         }
 
         if (!empty($this->groupBy)) {
@@ -323,12 +320,12 @@ class QueryBuilder implements
 
     /**
      * Adds an ORDER BY clause to the query.
-     * 
+     *
      * @param string $column
      * @param string $direction
-     * @return QueryOtherBuilderInterface
+     * @return self
      */
-    public function orderBy(string $column, string $direction = 'ASC'): QueryOtherBuilderInterface
+    public function orderBy(string $column, string $direction = 'ASC'): self
     {
         $this->orderBy = "ORDER BY $column $direction";
         return $this;
@@ -336,11 +333,11 @@ class QueryBuilder implements
 
     /**
      * Adds a GROUP BY clause to the query.
-     * 
+     *
      * @param string ...$columns
-     * @return QueryOtherBuilderInterface
+     * @return self
      */
-    public function groupBy(string ...$columns): QueryOtherBuilderInterface
+    public function groupBy(string ...$columns): self
     {
         $this->groupBy = 'GROUP BY ' . implode(', ', $columns);
         return $this;
@@ -348,13 +345,13 @@ class QueryBuilder implements
 
     /**
      * Adds a HAVING clause to the query.
-     * 
+     *
      * @param string $column
      * @param string $operator
      * @param mixed $value
-     * @return QueryOtherBuilderInterface
+     * @return self
      */
-    public function having(string $column, string $operator, mixed $value): QueryOtherBuilderInterface
+    public function having(string $column, string $operator, mixed $value): self
     {
         $this->having = "HAVING $column $operator " . $this->escapeValue($value);
         return $this;
@@ -362,11 +359,11 @@ class QueryBuilder implements
 
     /**
      * Sets the LIMIT for the query.
-     * 
+     *
      * @param int $limit
-     * @return QueryOtherBuilderInterface
+     * @return self
      */
-    public function limit(int $limit): QueryOtherBuilderInterface
+    public function limit(int $limit): self
     {
         $this->limit = "LIMIT $limit";
         return $this;
@@ -374,11 +371,11 @@ class QueryBuilder implements
 
     /**
      * Sets the OFFSET for the query.
-     * 
+     *
      * @param int $offset
-     * @return QueryOtherBuilderInterface
+     * @return self
      */
-    public function offset(int $offset): QueryOtherBuilderInterface
+    public function offset(int $offset): self
     {
         $this->offset = "OFFSET $offset";
         return $this;
@@ -388,7 +385,7 @@ class QueryBuilder implements
 
     /**
      * Builds the base SQL query string.
-     * 
+     *
      * @return string
      */
     protected function buildBaseQuery(): string
@@ -396,10 +393,7 @@ class QueryBuilder implements
         $query = "SELECT {$this->select} FROM {$this->table}";
 
         if (!empty($this->wheres)) {
-            $whereClauses = array_map(function ($where) {
-                return $where['column'] . ' ' . $where['operator'] . ' ' . (is_string($where['value']) ? "'" . $where['value'] . "'" : $where['value']);
-            }, $this->wheres);
-            $query .= ' WHERE ' . implode(' AND ', $whereClauses);
+            $query .= ' WHERE ' . implode(' ', $this->wheres);
         }
         if (!empty($this->groupBy)) {
             $query .= " {$this->groupBy}";
@@ -425,7 +419,7 @@ class QueryBuilder implements
 
     /**
      * Returns the SQL query string for the current state of the QueryBuilder.
-     * 
+     *
      * @return string
      */
     public function toSql(): string
