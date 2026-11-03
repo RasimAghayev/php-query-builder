@@ -23,9 +23,14 @@ Layihəni quraşdırmaq üçün aşağıdakı addımları izləyin:
    composer install
    ```
 
-3. Serveri işə salmaq:
+3. Serveri işə salmaq (layihənin kökündən):
    ```sh
-   php -S localhost:3000 index.php
+   php -S localhost:3000 -t src
+   ```
+
+   Və ya Docker ilə:
+   ```sh
+   make up
    ```
 
 ## Quraşdırma

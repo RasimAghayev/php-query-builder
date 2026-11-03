@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "3000:3000"
+
+  test:
+    build:
+      context: .
+      target: test
