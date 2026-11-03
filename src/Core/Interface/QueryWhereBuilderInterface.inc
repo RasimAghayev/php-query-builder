@@ -35,7 +35,7 @@ interface QueryWhereBuilderInterface
      * @param mixed|null $value The value to compare the column against.
      * @return self
      */
-    public function orWhere(string|callable $callback, string $operator = null, mixed $value = null): self;
+    public function orWhere(string|callable $callback, ?string $operator = null, mixed $value = null): self;
 
     /**
      * Adds a "WHERE IN" condition to the query.
