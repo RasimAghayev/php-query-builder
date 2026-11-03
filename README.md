@@ -1,5 +1,7 @@
 # PHP ilə Custom Query Builder
 
+![Views](https://hits.sh/github.com/RasimAghayev/php-query-builder.svg?label=views&color=0e75b6)
+
 Bu layihə PHP-də dinamik SQL sorğularını proqramlaşdırma yolu ilə yaratmağa imkan verən xüsusi bir Query Builder sinfini nümayiş etdirir. Obyekt yönümlü proqramlaşdırma (OOP) prinsiplərinə əsaslanır, ümumi SQL sorğuları üçün metodlar və `SUM`, `AVG`, `COUNT` kimi aqreqasiya funksiyalarını dəstəkləyir.
 
 ## Xüsusiyyətlər
