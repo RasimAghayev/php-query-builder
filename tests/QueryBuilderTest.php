@@ -300,6 +300,101 @@ class QueryBuilderTest extends TestCase
     /**
      * @return void
      */
+    public function testOrderByDefaultDirectionQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->orderBy('price')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT * FROM product ORDER BY price ASC;",
+            $sql
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testGroupByMultipleColumnsQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->groupBy('category', 'status')
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT * FROM product GROUP BY category, status;",
+            $sql
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testLimitQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->limit(10)
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT * FROM product LIMIT 10;",
+            $sql
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testOffsetQuery(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->offset(5)
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT * FROM product OFFSET 5;",
+            $sql
+        );
+    }
+
+    /**
+     * Documents escapeValue()'s known limitation (see docs/TECHNICAL_DEBT.md):
+     * it wraps strings in quotes but does not escape an embedded quote
+     * character, so this produces syntactically broken SQL. Not a fix —
+     * pins the current, intentional-for-now behavior.
+     *
+     * @return void
+     */
+    public function testEscapeValueDoesNotEscapeEmbeddedSingleQuote(): void
+    {
+        $queryBuilder = new QueryBuilder();
+
+        $sql = $queryBuilder
+            ->table('product')
+            ->where('name', '=', "O'Brien")
+            ->toSql();
+
+        $this->assertEquals(
+            "SELECT * FROM product WHERE name = 'O'Brien';",
+            $sql
+        );
+    }
+
+    /**
+     * @return void
+     */
     public function testSelectColumnAggregationQuery(): void
     {
         $queryBuilder = new QueryBuilder();

@@ -23,6 +23,8 @@ Also recommended in the same pass: resolve the interface-chaining PHPStan errors
 
 The existing 13 tests already cover every public method combination from the README. Once Phase 3's fix makes them pass, the main gap worth adding is a few edge cases not currently exercised: `orderBy()`/`groupBy()`/`limit()`/`offset()` used individually (today they only appear bundled together in one large "kitchen sink" test), and at least one test asserting `escapeValue()`'s actual behavior on a string containing a single quote (documenting the no-escaping limitation noted in `docs/TECHNICAL_DEBT.md`, not fixing it).
 
+**Done 2026-11-03** — added exactly those 5 tests (see `docs/TEST_REPORT.md` for the full list and verified results: 18/18 passing, 0 deprecations, lint/analyse still clean). `docs/TESTING_STRATEGY.md` added alongside, documenting why this repo needs unit tests only (no DB/HTTP/auth surface to integration-test).
+
 ## Not planned
 
 - **Adding real SQL parameterization / execution.** This library's entire design is "build a SQL string, hand it to something else" — turning that into a real query-execution layer (PDO bindings, a `get()`/`first()` that actually runs against a database) would be a different, much larger project, not a fix to this one. Flagged as a possible future direction, not a commitment.
