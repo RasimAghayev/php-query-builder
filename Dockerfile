@@ -5,7 +5,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
 
-FROM php:8.4-cli-alpine AS runtime
+FROM php:8.5-cli-alpine AS runtime
 WORKDIR /app
 
 RUN addgroup -S app && adduser -S app -G app
@@ -23,7 +23,7 @@ STOPSIGNAL SIGTERM
 # directory stays /app so its require 'vendor/autoload.php' resolves.
 CMD ["php", "-S", "0.0.0.0:3000", "-t", "src"]
 
-FROM php:8.4-cli AS test
+FROM php:8.5-cli AS test
 RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev unzip \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
