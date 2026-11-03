@@ -32,3 +32,6 @@ jobs:
 
       - name: Run PHPUnit
         run: composer test
+
+      - name: Audit dependencies for known vulnerabilities
+        run: composer audit

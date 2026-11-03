@@ -32,4 +32,4 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-scripts
 COPY . .
-CMD ["sh", "-c", "composer lint && composer analyse && composer test"]
+CMD ["sh", "-c", "composer lint && composer analyse && composer test && composer audit"]
