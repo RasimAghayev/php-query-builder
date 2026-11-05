@@ -3,3 +3,9 @@
 vendor
 docs
 *.md
+.env
+.env.*
+!.env.example
+.phpunit.result.cache
+.idea
+.vscode
