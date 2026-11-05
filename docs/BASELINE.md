@@ -194,3 +194,74 @@ collide on container/network names (R4).
 None. No `depends_on: condition: service_healthy` was added because there is
 nothing for `app` to depend on — documented here rather than silently
 omitted.
+
+## Phase 6 (Upgrade to latest) — re-verification, 2026-11-05
+
+Ran as the Phase 6 **pilot** for the PHP/Composer stack (no matching skill
+existed yet). Per standing decision 1, every version below was read live
+from its registry on this date, not assumed from the Phase 2 snapshot
+(`projects/info/deps/php-query-builder.md`, dated 2026-11-04):
+
+| Item | Current | Latest stable (checked live, 2026-11-05) | Action |
+|---|---|---|---|
+| PHP runtime (`php:8.5-cli-alpine`, `php:8.5-cli`) | 8.5.12 | 8.5.12 (php.net `releases/index.php?json`: `supported_versions` tops out at `8.5`; 8.6 is still pre-release, not eligible under decision 1's no-RC rule) | No change |
+| `composer:2` base image | pinned digest `sha256:5190d9b4...` | same digest — confirmed via `hub.docker.com/v2/.../tags/2` live lookup | No change |
+| `php:8.5-cli-alpine` digest | `sha256:e899a75c...` | same digest — confirmed live | No change |
+| `php:8.5-cli` digest | `sha256:9236fd37...` | same digest — confirmed live | No change |
+| `phpunit/phpunit` | 13.4.6 | 13.4.6 (Packagist `p2` metadata) | No change |
+| `phpstan/phpstan` | 2.3.5 | 2.3.5 (Packagist `p2` metadata) | No change |
+| `squizlabs/php_codesniffer` | 4.0.4 | 4.0.4 (Packagist `p2` metadata) | No change |
+| All transitive Composer packages | — | `composer outdated` (run inside `composer:2` container): "Everything up to date" for both direct and transitive | No change |
+| `actions/checkout@v7` | floating major tag | `v7.0.1` — same commit (`3d3c42e...`) the `v7` tag already pointed to | SHA-pinned (no functional bump; see below) |
+| `shivammathur/setup-php@v2` | floating major tag | `2.40.0` — same commit (`eb7c497e...`) the `v2` tag already pointed to | SHA-pinned (no functional bump; see below) |
+
+**Conclusion: this repo had zero outdated dependencies going into Phase 6.**
+Renovate (see below) had already landed every available bump as of PR #24
+(2026-11-03, two days before this phase ran) — this is exactly how the
+automation is supposed to work. Nothing here contradicts the Phase 2
+inventory; it independently re-confirms it two days later, live, as decision
+1 requires rather than assumes.
+
+**Changes actually made this phase:**
+1. `.github/workflows/ci.yml` — pinned `actions/checkout` and
+   `shivammathur/setup-php` to their current release commit SHA (with the
+   version as a trailing comment), closing the SHA-pinning gap
+   `deps/php-query-builder.md` flagged. Purely mechanical: both tags already
+   resolved to these exact commits, so CI behavior is unchanged.
+2. Added `renovate.json` (repo root) to make the already-active Renovate
+   automation's policy explicit and committed, instead of relying entirely
+   on account-level defaults invisible to anyone reading this repo: weekly
+   schedule, `prConcurrentLimit`/`prHourlyLimit` (runner-time budget),
+   grouping (PHP dev deps, GitHub Actions, Docker base images), major
+   Composer bumps kept ungrouped and labeled for individual review, Renovate
+   digest-pinning enabled for GitHub Actions going forward, and
+   vulnerability alerts on. No `dependabot.yml` added — the repo already has
+   a working bot (confirmed via `gh pr list`: `app/renovate` is the real
+   author of 17 historical PRs, most recently #24 merged 2026-11-05); running
+   both would just create duplicate/conflicting PRs.
+3. Local-checkout-only fix: this Windows host's `core.autocrlf=true` again
+   rewrote the same 7 LF-stored files to CRLF in the fresh Phase 6 worktree
+   (identical pitfall to the one already documented above under Phase 5 —
+   expected, since a new `git worktree add` repeats the same checkout).
+   Re-normalized to LF in the working copy only (`git diff --stat` showed
+   zero byte difference beforehand); no repo content changed, no commit
+   needed for `src/`/`tests/`.
+
+**Re-verification after the above** (`COMPOSE_PROJECT_NAME=php-query-builder-p6`,
+to stay isolated from any parallel Phase 5/6 run on another repo per R4):
+
+```
+$ make verify   →  exit 0
+```
+
+| Gate | Result | vs. Phase 5 baseline |
+|---|---|---|
+| `phpcs` (lint) | 0 errors, 0 warnings | unchanged |
+| `phpstan` (analyse) | 0 errors | unchanged |
+| `phpunit` (test) | 18 tests, 18 assertions, 0 failures | unchanged |
+| `composer audit` | "No security vulnerability advisories found." | unchanged |
+| `make up` + `curl localhost:20031/` (temporary port override) | byte-identical to the API/CLI snapshot recorded above | unchanged |
+
+No regression. No `docs/TECHNICAL_DEBT.md` entry was needed — there was no
+blocker, no unresolved gap, and no breaking change to this repo's own public
+contract (Gate 5 did not apply).
