@@ -1,10 +1,21 @@
+# Isolated project name so parallel agents on other repos never collide on
+# container/network names (R4). Ports come from the block reserved for this
+# repo in projects/info/state/ports.md (20030-20039) — override via
+# APP_HTTP_PORT if that port is busy on the host.
+name: php-query-builder-p5
+
 services:
   app:
     build:
       context: .
       target: runtime
     ports:
-      - "3000:3000"
+      - "${APP_HTTP_PORT:-20030}:3000"
+    # HEALTHCHECK is defined on the runtime image itself (Dockerfile); no
+    # override needed here. This repo is a standalone PHP library/demo with
+    # no database or other service dependency, so there is no
+    # `depends_on: condition: service_healthy` to add (n/a, not omitted by
+    # oversight).
 
   test:
     build:
