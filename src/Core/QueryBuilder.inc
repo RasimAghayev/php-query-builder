@@ -10,7 +10,6 @@
 
 namespace App\Core;
 
-use JetBrains\PhpStorm\Pure;
 use App\Core\Interface\{QueryStaticBuilderInterface,
     QueryWhereBuilderInterface,
     QueryOtherBuilderInterface,
