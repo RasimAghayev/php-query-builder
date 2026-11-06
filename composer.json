@@ -3,10 +3,6 @@
     "description": "PHP class Query Builder",
     "license": "MIT",
     "autoload": {
-        "psr-4": {
-            "App\\Core\\": "src/Core/",
-            "App\\Core\\Interface\\": "src/Core/Interface/"
-        },
         "files": [
             "src/Core/Interface/QueryStaticBuilderInterface.inc",
             "src/Core/Interface/AggregationInterface.inc",

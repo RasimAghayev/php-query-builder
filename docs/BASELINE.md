@@ -265,3 +265,59 @@ $ make verify   →  exit 0
 No regression. No `docs/TECHNICAL_DEBT.md` entry was needed — there was no
 blocker, no unresolved gap, and no breaking change to this repo's own public
 contract (Gate 5 did not apply).
+
+## Phase 7 (Dead code & restructure) — audit and re-verification, 2026-11-06
+
+Ran as the Phase 7 **pilot** for the PHP/Composer stack (R10) — `.claude/skills/`
+had no Phase-7 skill of any stack to follow yet; this run's skill proposal
+(see the Phase 7 handoff) is the input for the skill-curator.
+
+**Tooling used:** `phpcs`/`phpstan` (already configured, re-run via `make
+verify`), plus Psalm 6 (`--find-unused-code=always`, `--find-references-to`)
+installed ad hoc into a disposable container copy of the repo (never added
+to `composer.json` — standing decision 3 applies to project dependencies,
+not one-off verification tooling) for unused-class/method detection that
+neither `phpcs` nor `phpstan` attempt. Also checked by hand: every `use`
+import against its actual usage in the importing file; `composer.json`'s
+autoload mechanism against what actually resolves a class (tested
+empirically in a disposable container, not assumed); reflection/dynamic
+invocation (`call_user_func`, `$$`, `::class`, `method_exists`, `__call`,
+etc. — zero matches via grep); commented-out code (zero found — every `//`
+is a section-header comment); obsolete CI jobs (none — `php.yml` was
+already removed in Phase 3, `ci.yml` has exactly one job).
+
+**Findings and actions** — full detail in `docs/TECHNICAL_DEBT.md` #11-#13:
+
+| # | Finding | Action |
+|---|---|---|
+| 11 | Unused `use JetBrains\PhpStorm\Pure;` import in `QueryBuilder.inc` — never referenced as `#[Pure]`, class not even a declared dependency | **Removed** (own commit) |
+| 12 | Dead `psr-4` autoload block in `composer.json` — could never resolve any `.inc` file (PSR-4 loader always appends `.php`); `files` array was always the sole real loading mechanism; corrected the `docs/ARCHITECTURE.md` line that had described `psr-4` as functional | **Removed** (own commit) |
+| 13 | `protected function aggregate()` in `QueryBuilder.inc` — zero call sites (grep + Psalm `--find-references-to` + the Phase 3 auditor's own note), not on any interface, 0% test coverage | **Not deleted — escalated to Gate 5 / needs-approval.** It is `protected` (not `private`) on a non-`final`, Packagist-named class; an external subclass could call it, which is the "consumer outside this repo could be calling it" case the brief reserves for Gate 5, not a phase agent's own call. |
+
+**Restructuring ("re-shape to the upgraded stack's conventions"):** considered
+and explicitly declined to re-open. The `.inc` extension question was already
+adjudicated by the Phase 3 auditor under "Not treated as debt" in
+`docs/TECHNICAL_DEBT.md` as cosmetic/stylistic, unrelated to the PHP 8.4/8.5
+runtime upgrade Phase 6 landed; re-litigating an already-decided audit call
+is outside this phase's scope (R1). No deprecated-API usage or legacy
+compat shim was found anywhere (repo requires `php: ^8.4` only; `phpcs`/
+`phpstan` both report 0 errors). Nothing else needed restructuring.
+
+**Re-verification after the two deletions** (`COMPOSE_PROJECT_NAME=php-query-builder-p7`):
+
+```
+$ make verify   →  exit 0
+```
+
+| Gate | Result | vs. Phase 5/6 baseline |
+|---|---|---|
+| `phpcs` (lint) | 0 errors, 0 warnings | unchanged |
+| `phpstan` (analyse) | 0 errors | unchanged |
+| `phpunit` (test) | 18 tests, 18 assertions, 0 failures | unchanged |
+| `composer audit` | "No security vulnerability advisories found." | unchanged |
+| `make up` + `curl localhost:20037/` (temporary port override) | byte-identical to the API/CLI snapshot recorded above | unchanged |
+
+No regression. One `docs/TECHNICAL_DEBT.md` entry (#13) added and left open
+as `needs-approval` — Gate 5, not a blocker to this phase's own exit (dead
+code that tooling+manual review found and could not safely delete is
+documented, not guessed on).
