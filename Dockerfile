@@ -8,7 +8,7 @@
 #            `docker build --target test` fails the build if any gate fails.
 # - runtime: slim, non-root, healthchecked; the only stage ever deployed.
 
-FROM composer:2@sha256:5190d9b445add2fa26090108273cb1ef1e1af98175201c737b85b3c4f90fbf7c AS deps
+FROM composer:2@sha256:8de2184c6de224f4689e8f80ed5f5edaf0030b6b8b7839a22a2bcb6722ac87d0 AS deps
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
@@ -27,7 +27,7 @@ FROM php:8.5-cli@sha256:50956f094e90a716d43bea28087d447555ad80510e386ab8c9c10d8c
 RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev unzip \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=composer:2@sha256:5190d9b445add2fa26090108273cb1ef1e1af98175201c737b85b3c4f90fbf7c /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2@sha256:8de2184c6de224f4689e8f80ed5f5edaf0030b6b8b7839a22a2bcb6722ac87d0 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
