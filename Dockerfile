@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
     COMPOSER_CACHE_DIR=/tmp/composer-cache \
     composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
 
-FROM php:8.5-cli-alpine@sha256:1ff5b45922ab30f418447c6089dbe2eba5f01e0b2742863d0327ac349305d70f AS base
+FROM php:8.6-cli-alpine@sha256:7cadc021ea2464b01da1e546c51e3d5ffe924a07ce75d169c1608457ad56879f AS base
 WORKDIR /app
 
 FROM base AS build
@@ -23,7 +23,7 @@ COPY --from=deps /app/vendor ./vendor
 COPY composer.json ./
 COPY src ./src
 
-FROM php:8.5-cli@sha256:50956f094e90a716d43bea28087d447555ad80510e386ab8c9c10d8c70d781a9 AS test
+FROM php:8.6-cli@sha256:d84acf3155d907afaa5afa9b9457c5f12016b6dc7ade84659f40cdc505cc087d AS test
 RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev unzip \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
